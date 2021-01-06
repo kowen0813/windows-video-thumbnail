@@ -14,8 +14,6 @@
 #include <assert.h>
 #include <propvarutil.h>
 
-//#include <gdiplus.h>
-//#include <gdiplusheaders.h>
 #include "atlimage.h"
 using namespace std;
 
@@ -318,22 +316,6 @@ HRESULT save_thumb(IMFSample* pSample, LONGLONG hnsPos, UINT16 frame_num)
 
         assert(cbBitmapData == (pitch * m_format.imageHeightPels));
         
-        /*
-        Gdiplus::Bitmap image(m_format.imageWidthPels, m_format.imageHeightPels, m_format.stride, PixelFormat32bppRGB, pBitmapData);
-        Gdiplus::Image* im = new Gdiplus::Bitmap(m_format.rcPicture.right, m_format.rcPicture.bottom);
-        Gdiplus::Graphics g(im);
-        g.ScaleTransform((float)m_format.rcPicture.right/ (float)m_format.imageWidthPels, (float)m_format.rcPicture.bottom/ (float)m_format.imageHeightPels);
-        g.DrawImage(&image, 0, 0);
-        
-        
-        CLSID clsId;
-        // Get the class identifier for the PNG encoder
-		// *  - BMP:  557CF400-1A04-11D3-9A73-0000F81EF32E
-		// *  - JPEG: 557CF401-1A04-11D3-9A73-0000F81EF32E
-		// *  - GIF:  557CF402-1A04-11D3-9A73-0000F81EF32E
-		// *  - PNG:  557CF406-1A04-11D3-9A73-0000F81EF32E
-        ::CLSIDFromString(L"{557CF406-1A04-11D3-9A73-0000F81EF32E}", &clsId);
-        */
         CString  strFileName;
         strFileName.Format(_T("%I64d.jpg"), frame_num);
         cout << frame_num << " pos: " << hnsPos << " \n";
@@ -584,13 +566,6 @@ BOOL InitializeApp()
         hr = MFStartup(MF_VERSION);
     }
     
-	// Initialize GDI+
-    /*
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    ULONG_PTR gdiplusToken;
-    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-    */
-
     return (SUCCEEDED(hr));
 }
 
@@ -622,4 +597,5 @@ int _tmain(int argc, _TCHAR* argv[])
        cout << " Create Bitmaps error";
        return hr;
    }
+   return hr;
 }
