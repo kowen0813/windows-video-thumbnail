@@ -24,6 +24,7 @@ struct FormatInfo
     BOOL            bTopDown;
     RECT            rcPicture;    // Corrected for pixel aspect ratio
     LONG            stride;
+    LONG            rotaion;
 
     FormatInfo() : imageWidthPels(0), imageHeightPels(0), bTopDown(FALSE)
     {
@@ -63,6 +64,7 @@ HRESULT GetVideoFormat()
     HRESULT hr = S_OK;
     UINT32  width = 0, height = 0;
     LONG lStride = 0;
+    LONG rotaion = 0;
     //MFRatio par = { 0 , 0 };
     float ratio = 1.0;
 
@@ -95,9 +97,12 @@ HRESULT GetVideoFormat()
 
     // Get the stride to find out if the bitmap is top-down or bottom-up.
     lStride = (LONG)MFGetAttributeUINT32(pType, MF_MT_DEFAULT_STRIDE, 1);
+    rotaion = (LONG)MFGetAttributeUINT32(pType, MF_MT_VIDEO_ROTATION, 0);
+    cout << "rotaion:"<< rotaion <<"\n";
 
     format.bTopDown = (lStride > 0);
     format.stride = lStride;
+    format.rotaion = rotaion;
 
     if (width >= height)
     {
@@ -317,7 +322,7 @@ HRESULT save_thumb(IMFSample* pSample, LONGLONG hnsPos, UINT16 frame_num)
         assert(cbBitmapData == (pitch * m_format.imageHeightPels));
         
         CString  strFileName;
-        strFileName.Format(_T("%I64d.jpg"), frame_num);
+        strFileName.Format(_T("%d_%I64d.jpg"), m_format.rotaion, frame_num);
         cout << frame_num << " pos: " << hnsPos << " \n";
         
         
@@ -363,7 +368,7 @@ done:
 //
 // pRT:      Direct2D render target. Used to create the bitmap.
 // hnsPos:   The seek position.
-// pSprite:  A Sprite object to hold the bitmap.
+// frame_num:  how much frame whill be create
 //-------------------------------------------------------------------
 
 HRESULT CreateBitmap(LONGLONG& hnsPos, UINT16 frame_num, bool seek_interval=true)
